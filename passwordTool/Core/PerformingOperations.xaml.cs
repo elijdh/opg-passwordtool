@@ -1,0 +1,368 @@
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.IO;
+using Spire.Doc;
+using Spire.Pdf;
+using Word = Microsoft.Office.Interop.Word;
+//using Microsoft.Office.Interop.Word;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Web.Services.Description;
+using System.Runtime.InteropServices;
+using Page = System.Windows.Controls.Page;
+using Spire.Doc.Fields;
+
+namespace passwordTool.Core
+{
+    /// <summary>
+    /// Interaction logic for PerformingOperations.xaml
+    /// </summary>
+    public partial class PerformingOperations : Page
+    {
+        private string folderpath;
+        private string opCode; // either r= remove, a=add, or o=open
+        private string title;
+        private string password;
+        public PerformingOperations(String path, string operation, string TitlePart)
+        {
+            InitializeComponent();
+            folderpath = path;
+            opCode = operation.ToUpper();
+            title = TitlePart;
+
+            //setting tectblock display for folderpath and operation code
+            SelectedPathTextBox.Text = $"Selected Folder: {folderpath}";
+            TitleTextBox.Text = $"'s {TitlePart} Tool";
+
+            // for prompt on first page
+            if (operation == "R") { PasswordPrompt.Text = "Please Enter the password you would like to remove from the files below:"; }
+            else if (operation == "A") { PasswordPrompt.Text = "Please Enter the password you would like to add to the files below:"; }
+            else if (operation == "O") { PasswordPrompt.Text = "Please Enter the password for the files you would like to open below:"; }
+            else { PasswordPrompt.Text = "Please Enter the password below:"; }
+
+        }
+
+        // for text in password textbox
+        private void PasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (passwordTextBox.Text == "Enter your password")
+            {
+                passwordTextBox.Text = string.Empty;
+                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
+            }
+        }
+
+        private void PasswordTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(passwordTextBox.Text))
+            {
+                passwordTextBox.Text = "Enter your password";
+                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
+            }
+        }
+
+        private void Button_Click_Back(object sender, RoutedEventArgs e)
+        {
+            if (NavigationService.CanGoBack)
+            {
+                NavigationService.GoBack();
+            } 
+
+        } 
+        public void Button_Close(object sender, RoutedEventArgs e)
+        {
+            var window = System.Windows.Window.GetWindow(this);
+            window?.Close();
+        }
+
+
+        // for button openeing + minimizing
+        private void Button_Minimize(object sender, RoutedEventArgs e)
+        {
+            var window = System.Windows.Window.GetWindow(this);
+            window.WindowState = WindowState.Minimized;
+        }
+
+        // to show error message
+        private void ShowErrorMessage(string message)
+        {
+            ErrorMessageTextBlock.Text = $"ERROR: {message}";
+        }
+
+
+        // when continue 
+        private void Button_Run_code(object sender, RoutedEventArgs e)
+        {
+            
+            password = passwordTextBox.Text;
+
+            if ((string.IsNullOrEmpty(password) && password.Trim().Length == 0) || (password == "Enter your password"))
+            {
+                ShowErrorMessage("No password entered. Enter a valid password");
+            }
+            else
+            {
+                PasswordTool(folderpath, opCode, password);
+            }
+
+        }
+
+
+        // to open error pop up page
+        private static void ErrorPage(List<string> filepath, string opcode)
+        {
+            PopUp errorPage = new PopUp(filepath, opcode);
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
+            {
+                errorPage.Owner = mainWindow;
+                errorPage.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+
+            errorPage.ShowDialog();
+
+        }
+
+        //simple error page pop up
+        private static void SimpleErrorPage(string folderpath, string opcode, string ErrMsg)
+        {
+            SimpleErrorPopUp errorPage = new SimpleErrorPopUp(folderpath, opcode, ErrMsg);
+
+            // puts pop up in middle of window
+            System.Windows.Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
+            {
+                errorPage.Owner = mainWindow;
+                errorPage.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+
+            // Show the error page
+            errorPage.ShowDialog();
+
+
+        }
+
+        //open word document 
+        static void OpenWordDocument(string filePath, string password, string opcode, List<string> errorfiles)
+        {
+            Word.Application wordApp = new Word.Application();
+            Word.Document doc = null;
+
+            try
+            {
+                // Open the Word document with the provided password
+                doc = wordApp.Documents.Open(filePath, ReadOnly: false, PasswordDocument: password);
+
+                // Make Word visible to the user
+                wordApp.Visible = true;
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                if (!Path.GetFileName(filePath).StartsWith("~$"))
+                { 
+                    errorfiles.Add(filePath);
+                }
+               
+            }
+            finally
+            {
+                // Properly release COM objects
+                if (doc != null)
+                {
+                    //doc.Close(false); // Close the document without saving changes
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(doc);
+                }
+
+                if (wordApp != null)
+                {
+                    //wordApp.Quit(); // Quit the Word application
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(wordApp);
+                    
+                }
+            }
+        }
+
+        // openeing pdf documents
+        static void OpenPdfDocument(string filepath, string password, string opcode)
+        {
+           
+
+        }
+
+        private void ErrorFiles(List<string> files)
+        {
+            ErrorPage(files, opCode);
+        }
+
+
+        public void PasswordTool(string folderpath, string opcode, string password)
+        {
+
+            List<string> errorFiles = new List<string>();
+
+            //for opening files
+            if (opcode=="O")
+            {
+                foreach (string filepath in Directory.GetFiles(folderpath,"*.docx")) {
+                    OpenWordDocument(filepath, password, opcode, errorFiles);
+                }
+
+                // to deal with error files
+                if (errorFiles.Count > 0)
+                {
+                    ErrorPage(errorFiles, opcode);
+                }
+               
+                SimpleErrorPage(folderpath, "Message", "All of the files have been opened.");
+                MainWindow mainWindow = new MainWindow
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                AppManager.CurrentMainWindow=mainWindow;
+                mainWindow.Show();
+                Button_Close(this, null); // Ensure this closes the current window properly.
+
+            }
+
+            //to add password to files
+            else if(opcode=="A")
+            {
+                // iterates through all .docx files
+                foreach(string filepath in Directory.GetFiles(folderpath,"*.docx")) {
+                    //loads files, tries encrypting
+                    try
+                    {
+                        Document doc = new Document();
+                        doc.LoadFromFile(filepath);
+                        doc.Encrypt(password);
+                        doc.SaveToFile(filepath, Spire.Doc.FileFormat.Docx);
+                    }
+                    catch (Exception) {
+
+                        if (!Path.GetFileName(filepath).StartsWith("~$"))
+                        {
+                            errorFiles.Add(filepath);
+                        }
+
+                                               
+                    }
+                }
+
+                //iterates through all the pdf files
+                foreach (string filepath in Directory.GetFiles(folderpath, "*.pdf"))
+                {
+                    try
+                    {
+                        using (PdfDocument pdf = new PdfDocument())
+                        {
+                            pdf.LoadFromFile(filepath, password);
+                            pdf.Security.Encrypt(password, "permission", Spire.Pdf.Security.PdfPermissionsFlags.Print | Spire.Pdf.Security.PdfPermissionsFlags.CopyContent, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit);
+                            pdf.SaveToFile(filepath, Spire.Pdf.FileFormat.PDF);
+                        }
+
+                    } catch (Exception) {
+
+                        if (!Path.GetFileName(filepath).StartsWith("~$"))
+                        {
+                            errorFiles.Add(filepath);
+                            //SimpleErrorPage(filepath, opcode, "The file may already be encrypted, please check or try again");
+                        }
+                        
+                    }
+                }
+
+
+                if (errorFiles.Count > 0)
+                {
+                    SimpleErrorPage("", opcode, $"The following file(s) may already be encrypted, please check or try again\n\n{string.Join(Environment.NewLine, errorFiles)}");
+                    
+                }
+
+                SimpleErrorPage(folderpath, "Message", "Password has been added to the files.");
+                MainWindow mainWindow = new MainWindow
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                AppManager.CurrentMainWindow = mainWindow;
+                mainWindow.Show();
+                Button_Close(this, null);
+
+
+            }
+            // removing password form files
+            else if (opcode == "R")
+            {
+                // iterates through docx files in directory
+                foreach(string filepath in Directory.GetFiles(folderpath, "*.docx"))
+                {
+                    try
+                    {
+                        Document doc = new Document();
+                        doc.LoadFromFile(filepath, Spire.Doc.FileFormat.Docx, password);
+                        doc.RemoveEncryption();
+                        doc.SaveToFile(filepath, Spire.Doc.FileFormat.Docx);
+                    }
+                    catch (Exception)
+                    {
+                        if (!Path.GetFileName(filepath).StartsWith("~$"))
+                        {
+                            errorFiles.Add(filepath);
+                        }
+                        //ErrorPage(filepath, opcode);
+
+                        
+                    }
+                }
+
+                //iterates through pdf files
+                foreach (string filepath in Directory.GetFiles(folderpath, "*.pdf"))
+                {
+                    try
+                    {
+                        PdfDocument pdf = new PdfDocument();
+                        pdf.LoadFromFile(filepath, password);
+                        pdf.Security.Encrypt(string.Empty, string.Empty, Spire.Pdf.Security.PdfPermissionsFlags.Default, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit, "permission");
+                        pdf.SaveToFile(filepath, Spire.Pdf.FileFormat.PDF);
+
+                    }
+                    catch (Exception)
+                    {
+                        //ErrorPage(filepath, opcode);
+                        if (!Path.GetFileName(filepath).StartsWith("~$"))
+                        {
+                            errorFiles.Add(filepath);
+                        }
+                    }
+                }
+
+                // to deal with error files
+                if (errorFiles.Count > 0)
+                {
+                    
+                    ErrorPage(errorFiles, opcode);
+                }
+                SimpleErrorPage(folderpath, "Message", "Password has been removed from all of the files.");
+                MainWindow mainWindow = new MainWindow
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                AppManager.CurrentMainWindow = mainWindow;
+                mainWindow.Show();
+                Button_Close(this, null);
+            }
+            else
+            {
+                SimpleErrorPage("", opcode, "An Unexpected error occured. Try Again.");
+                MainWindow mainWindow = new MainWindow
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                AppManager.CurrentMainWindow = mainWindow;
+                mainWindow.Show();
+                Button_Close(this, null); // Ensure this closes the current window properly.
+            }
+        }
+    }
+}

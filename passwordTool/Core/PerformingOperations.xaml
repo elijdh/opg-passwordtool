@@ -1,0 +1,121 @@
+﻿<Page x:Class="passwordTool.Core.PerformingOperations"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:passwordTool.Core"
+      mc:Ignorable="d" 
+        d:DesignHeight="600" d:DesignWidth="920"
+      Background="Transparent"
+      Title="OPGS's Adding Password Tool">
+
+
+    <Border Background="#F4F3F2" CornerRadius="30">
+
+        <Grid>
+
+            <Image Source=" https://www.opg.com/wp-content/uploads/2019/02/rsz_opg_condensed_logo_green_rbg.png"
+         Stretch="Uniform" Margin="193,45,617,486"/>
+
+
+            <TextBlock Name="TitleTextBox"
+           VerticalAlignment="Top"
+           HorizontalAlignment="Left"
+           FontSize="35" Width="454"
+           Margin="308,67,0,0"
+           FontWeight="Bold" />
+
+
+
+            <TextBlock Name="PasswordPrompt" Margin="151,218,0,336"
+                FontSize="20"
+                TextWrapping="Wrap"
+                HorizontalAlignment="Left"
+                TextAlignment="center" Width="650" 
+                />
+
+
+            <Border CornerRadius="15" Background="#E6E6E6" Height="50" Margin="203,324,203,226">
+                <TextBox Name="passwordTextBox" 
+                 Height="50" 
+                 TextAlignment="Center"
+                 Foreground="#595959"
+                 FontSize="19"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 VerticalAlignment="Center"
+                 HorizontalContentAlignment="Center" 
+                 VerticalContentAlignment="Center"
+                 Text="Enter your password"
+                 LostFocus="PasswordTextBox_LostFocus"
+                 GotFocus="PasswordTextBox_GotFocus" RenderTransformOrigin="0.393,0.54" Margin="-1,0,0,0"/>
+            </Border>
+
+           
+            <TextBlock  x:Name="SelectedPathTextBox"
+                Foreground="DarkGray" Margin="86,379,86,197" 
+                TextAlignment="Center"
+                FontSize="14"/>
+
+            <Grid>
+                <Frame x:Name="_Buttons"
+                    NavigationUIVisibility="Hidden"/>
+
+                <Button Name="BackButton" 
+                    Height="40" Width="60" VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Margin="15,12,0,0"
+                    Click="Button_Click_Back"
+                    Background="#F4F3F2"
+                    BorderThickness="0"
+                >
+                        <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="0.498"/>
+                                    <TranslateTransform X="0.194" Y="-0.266"/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                </Button>
+
+
+            </Grid>
+            
+            <!-- continue button --><!--
+            <Border CornerRadius="15"  Margin="378,475,378,94" 
+                BorderThickness="1"
+                BorderBrush="Black">
+                <Button
+                    Content="Continue"
+                    Margin="13,-1,13,-1"
+                    Foreground="#595959"
+                    FontSize="19"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="Button_Run_code">
+                </Button>
+            </Border>-->
+
+            <!-- continue button -->
+            <Button
+                Content="Continue"
+                Style="{StaticResource otherButton}" 
+                FontSize="19"
+                Click="Button_Run_code"
+                Margin="391,474,391,93"/>   
+
+            <!-- error text-->
+            <TextBlock  x:Name="ErrorMessageTextBlock"
+                Foreground="Red" Margin="55,542,56,34" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="19"/>
+
+        </Grid>
+
+
+    </Border>
+</Page>
