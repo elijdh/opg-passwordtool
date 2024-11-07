@@ -64,8 +64,9 @@
                         Margin="0,11,39,0"
                         Background="#d4d2d0"
                         Click="Button_Minimize"
+                        Style="{StaticResource noThemeButton}" 
                         BorderThickness="0">
-                    <Image Source="https://cdn-icons-png.flaticon.com/512/271/271207.png" RenderTransformOrigin="1.096,0.592" Height="12" Width="16"/>
+                    <Image Source="/assets/minimizeButton.png" RenderTransformOrigin="1.096,0.592" Height="12" Width="16"/>
                 </Button>
 
 
@@ -76,8 +77,9 @@
                         Margin="0,8,20,0"
                         Background="#d4d2d0"
                         Click="Button_Close"
+                        Style="{StaticResource noThemeButton}" 
                         BorderThickness="0">
-                    <Image Source="https://cdn-icons-png.flaticon.com/512/8867/8867444.png" RenderTransformOrigin="0.456,-0.438" Height="10" Width="14">
+                    <Image Source="/assets/closeButton.png" RenderTransformOrigin="0.456,-0.438" Height="10" Width="14">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>

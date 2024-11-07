@@ -17,8 +17,20 @@
     <Border Background="#F4F3F2" CornerRadius="30" MouseDown="Border_MouseDown">
 
         <Grid>
-            <Image Source=" https://www.opg.com/wp-content/uploads/2019/02/rsz_opg_condensed_logo_green_rbg.png"
-               Stretch="Uniform" Margin="-65,500,700,40" Width="75"/>
+            <Image Source="/assets/opgLogo.png"
+               Stretch="Uniform" Margin="25,517,814,15" Width="75"/>
+            <Image Source="/assets/info.png"
+               Stretch="Uniform" Margin="865,536,16,0" Width="40">
+                <Image.ToolTip>
+                    <ToolTip Placement="Top">
+                    <TextBlock>
+                        PasswordTool v1.0<LineBreak/>
+                        Created November 2024<LineBreak/>
+                        By Elijah Chang &amp; Aamna Aamir
+                    </TextBlock>
+                    </ToolTip>
+                </Image.ToolTip>
+            </Image>
 
 
             <TextBlock Text="Password Tool"
@@ -50,8 +62,9 @@
                         Margin="0,10,10,5"
                         Background="#F4F3F2"
                         Click="Button_Minimize"
+                        Style="{StaticResource noThemeButton}" 
                         BorderThickness="0">
-                        <Image Source="https://cdn-icons-png.flaticon.com/512/271/271207.png" RenderTransformOrigin="1.096,0.592" Height="35" Width="38"/>
+                        <Image Source="/assets/minimizeButton.png" RenderTransformOrigin="1.096,0.592" Height="35" Width="38"/>
                     </Button>
 
 
@@ -62,8 +75,9 @@
                             Margin="0,5,15,5"
                             Background="#F4F3F2"
                             Click="Button_Close"
+                            Style="{StaticResource noThemeButton}" 
                             BorderThickness="0">
-                        <Image Source="https://cdn-icons-png.flaticon.com/512/8867/8867444.png"  Height="19" Width="23"/>
+                        <Image Source="/assets/closeButton.png"  Height="19" Width="23"/>
                     </Button>
 
                 </StackPanel>

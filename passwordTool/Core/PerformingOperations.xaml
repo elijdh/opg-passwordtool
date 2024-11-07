@@ -14,8 +14,8 @@
 
         <Grid>
 
-            <Image Source=" https://www.opg.com/wp-content/uploads/2019/02/rsz_opg_condensed_logo_green_rbg.png"
-               Stretch="Uniform" Margin="-65,500,700,40" Width="75"/>
+            <Image Source="/assets/opgLogo.png"
+               Stretch="Uniform" Margin="25,517,814,15" Width="75"/>
 
 
             <TextBlock Name="TitleTextBox"
@@ -89,7 +89,7 @@
             Focusable="False">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
-                            <Setter Property="Background" Value="Green"/>
+                            <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type Button}">
@@ -129,8 +129,9 @@
                     Click="Button_Click_Back"
                     Background="#F4F3F2"
                     BorderThickness="0"
+                    Style="{StaticResource noThemeButton}" 
                 >
-                        <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
+                        <Image Source="../assets/backButton.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
                         </Image>
                     </Button>
 
