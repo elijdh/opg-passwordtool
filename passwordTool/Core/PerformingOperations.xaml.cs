@@ -7,6 +7,7 @@ using Spire.Pdf;
 using Word = Microsoft.Office.Interop.Word;
 using System.Collections.Generic;
 using Page = System.Windows.Controls.Page;
+using System.Windows.Media.Imaging;
 
 namespace passwordTool.Core
 {
@@ -37,24 +38,53 @@ namespace passwordTool.Core
             else { PasswordPrompt.Text = "Please Enter the password below:"; }
 
         }
+        private bool isPasswordVisible = false;
 
-        // for text in password textbox
-        private void PasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void TogglePasswordVisibility(object sender, RoutedEventArgs e)
         {
-            if (passwordTextBox.Text == "Enter your password")
+            isPasswordVisible = !isPasswordVisible;
+
+            if (isPasswordVisible)
             {
-                passwordTextBox.Text = string.Empty;
-                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
+                // Show the TextBox and hide the PasswordBox
+                passwordTextBox.Visibility = Visibility.Visible;
+                passwordBox.Visibility = Visibility.Collapsed;
+
+                // Update the icon to indicate the password is visible
+                toggleImage.Source = new BitmapImage(new Uri("../assets/passwordVisibility1.png", UriKind.Relative));
+
+                // Set the TextBox text to match the PasswordBox password
+                passwordTextBox.Text = passwordBox.Password;
+            }
+            else
+            {
+                // Show the PasswordBox and hide the TextBox
+                passwordTextBox.Visibility = Visibility.Collapsed;
+                passwordBox.Visibility = Visibility.Visible;
+
+                // Update the icon to indicate the password is hidden
+                toggleImage.Source = new BitmapImage(new Uri("../assets/passwordVisibility.png", UriKind.Relative));
+
+                // Sync the PasswordBox with the TextBox's text
+                passwordBox.Password = passwordTextBox.Text;
             }
         }
-
-        private void PasswordTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(passwordTextBox.Text))
-            {
-                passwordTextBox.Text = "Enter your password";
-                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
-            }
+            // Hide placeholder when the PasswordBox is focused
+            placeholderText.Visibility = Visibility.Collapsed;
+        }
+
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Show placeholder if the PasswordBox is empty and loses focus
+            placeholderText.Visibility = string.IsNullOrEmpty(passwordBox.Password) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            // Update placeholder visibility based on content
+            placeholderText.Visibility = string.IsNullOrEmpty(passwordBox.Password) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Button_Click_Back(object sender, RoutedEventArgs e)
@@ -112,7 +142,7 @@ namespace passwordTool.Core
         private void Button_Run_code(object sender, RoutedEventArgs e)
         {
 
-            password = passwordTextBox.Text;
+            password = passwordBox.Password;
 
             if ((string.IsNullOrEmpty(password) && password.Trim().Length == 0) || (password == "Enter your password"))
             {
@@ -359,6 +389,11 @@ namespace passwordTool.Core
                 SimpleErrorPage("", opcode, "An Unexpected error occured. Try Again.");
                 goMainPage();
             }
+        }
+
+        private void _Buttons_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+
         }
     }
 }

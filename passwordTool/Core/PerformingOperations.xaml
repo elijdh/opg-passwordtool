@@ -22,46 +22,107 @@
            VerticalAlignment="Top"
            HorizontalAlignment="Center"
            FontSize="35"
-           Margin="0,67,0,0"
+           Margin="0,150,0,0"
            FontWeight="Bold" />
 
 
 
-            <TextBlock Name="PasswordPrompt" Margin="0,218,0,336"
+            <TextBlock Name="PasswordPrompt" Margin="0,280,0,0"
                 FontSize="20"
                 TextWrapping="Wrap"
                 HorizontalAlignment="Center"
                 TextAlignment="center" Width="650" 
                 />
 
+            <Grid>
+                <!-- Placeholder TextBlock -->
+                <TextBlock x:Name="placeholderText"
+               Text="Password"
+               Foreground="#595959"
+               FontSize="19"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Center"
+               IsHitTestVisible="False"
+               Visibility="Visible" Margin="0,336,0,0"/>
 
-            <Border CornerRadius="15" Background="#E6E6E6" Height="50" Margin="200,324,200,226">
-                <TextBox Name="passwordTextBox" 
-                 Height="50" 
-                 TextAlignment="Center"
-                 Foreground="#595959"
-                 FontSize="19"
-                 BorderThickness="0"
-                 Background="Transparent"
-                 VerticalAlignment="Center"
-                 HorizontalContentAlignment="Center" 
-                 VerticalContentAlignment="Center"
-                 Text="Enter your password"
-                 LostFocus="PasswordTextBox_LostFocus"
-                 GotFocus="PasswordTextBox_GotFocus" RenderTransformOrigin="0.393,0.54" Margin="-1,0,0,0"/>
-            </Border>
+                <!-- PasswordBox (hidden text) -->
+                <PasswordBox x:Name="passwordBox"
+                     Height="50"
+                     FontSize="19"
+                     Foreground="#595959"
+                     Background="Transparent"
+                     VerticalAlignment="Top"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     BorderThickness="0"
+                     Margin="200,325,200,225"
+                     PasswordChanged="PasswordBox_PasswordChanged"
+                     GotFocus="PasswordBox_GotFocus"
+                     LostFocus="PasswordBox_LostFocus"
+                     Visibility="Visible"/>
 
-           
-            <TextBlock  x:Name="SelectedPathTextBox"
+                <!-- TextBox (visible text, initially hidden) -->
+                <Border CornerRadius="15" Background="#E6E6E6" Height="50" Margin="200,325,200,225" Panel.ZIndex="-1">
+                    <TextBox x:Name="passwordTextBox"
+                     Height="50"
+                     FontSize="19"
+                     Foreground="#595959"
+                     Background="Transparent"
+                     VerticalAlignment="Center"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     BorderThickness="0"
+                     Margin="0,0,0,0"
+                     Text="{Binding ElementName=passwordBox, Path=Password}"
+                     Visibility="Collapsed"
+                     IsHitTestVisible="False"                
+                     IsReadOnly="True"/>
+                </Border>
+
+                <!-- Toggle Button -->
+                <Button Width="30"
+            Height="30"
+            Background="Transparent"
+            BorderBrush="Transparent"
+            Panel.ZIndex="1"
+            Click="TogglePasswordVisibility" Margin="672,331,214,230"
+            Focusable="False">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="Green"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+
+                    </Button.Style>
+                    <StackPanel>
+                        <Image x:Name="toggleImage" Source="../assets/passwordVisibility.png" />
+                    </StackPanel>
+                </Button>
+
+                <TextBlock  x:Name="SelectedPathTextBox"
                 Foreground="DarkGray" Margin="86,379,86,197" 
                 TextAlignment="Center"
                 FontSize="14"/>
 
-            <Grid>
-                <Frame x:Name="_Buttons"
-                    NavigationUIVisibility="Hidden"/>
+                <Grid>
+                    <Frame x:Name="_Buttons"
+                    NavigationUIVisibility="Hidden" Navigated="_Buttons_Navigated"/>
 
-                <Button Name="BackButton" 
+                    <Button Name="BackButton" 
                     Height="40" Width="60" VerticalAlignment="Top"
                     HorizontalAlignment="Left"
                     Margin="15,12,0,0"
@@ -69,38 +130,30 @@
                     Background="#F4F3F2"
                     BorderThickness="0"
                 >
-                    <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
-                        <Image.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform/>
-                                <SkewTransform/>
-                                <RotateTransform Angle="0.498"/>
-                                <TranslateTransform X="0.194" Y="-0.266"/>
-                            </TransformGroup>
-                        </Image.RenderTransform>
-                    </Image>
-                </Button>
+                        <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
+                        </Image>
+                    </Button>
 
 
-            </Grid>
+                </Grid>
 
-            <!-- continue button -->
-            <Button
+                <!-- continue button -->
+                <Button
                 Content="Continue"
                 Style="{StaticResource otherButton}" 
                 FontSize="19"
                 Click="Button_Run_code"
-                Margin="391,474,391,93"/>   
+                Margin="391,474,391,93"/>
 
-            <!-- error text-->
-            <TextBlock  x:Name="ErrorMessageTextBlock"
+                <!-- error text-->
+                <TextBlock  x:Name="ErrorMessageTextBlock"
                 Foreground="Red" Margin="55,542,56,34" 
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="19"/>
 
+            </Grid>
+
         </Grid>
-
-
     </Border>
 </Page>
