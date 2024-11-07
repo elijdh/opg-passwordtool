@@ -1,27 +1,11 @@
-﻿using Microsoft.Office.Interop.Word;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
-using Spire.Doc;
 using Spire.Pdf;
-using System.Drawing;
 using Word = Microsoft.Office.Interop.Word;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Forms;
-using System.Windows.Interop;
 using Window = System.Windows.Window;
 using Path = System.IO.Path;
 

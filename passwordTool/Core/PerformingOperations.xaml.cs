@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
 using Spire.Doc;
 using Spire.Pdf;
 using Word = Microsoft.Office.Interop.Word;
-//using Microsoft.Office.Interop.Word;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Web.Services.Description;
-using System.Runtime.InteropServices;
 using Page = System.Windows.Controls.Page;
-using Spire.Doc.Fields;
 
 namespace passwordTool.Core
 {
