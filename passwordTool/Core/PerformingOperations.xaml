@@ -69,35 +69,20 @@
                     Background="#F4F3F2"
                     BorderThickness="0"
                 >
-                        <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform Angle="0.498"/>
-                                    <TranslateTransform X="0.194" Y="-0.266"/>
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
+                    <Image Source="https://cdn-icons-png.flaticon.com/512/9312/9312240.png" Height="42" Width="64" RenderTransformOrigin="0.036,-0.121">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0.498"/>
+                                <TranslateTransform X="0.194" Y="-0.266"/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
                 </Button>
 
 
             </Grid>
-            
-            <!-- continue button --><!--
-            <Border CornerRadius="15"  Margin="378,475,378,94" 
-                BorderThickness="1"
-                BorderBrush="Black">
-                <Button
-                    Content="Continue"
-                    Margin="13,-1,13,-1"
-                    Foreground="#595959"
-                    FontSize="19"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Click="Button_Run_code">
-                </Button>
-            </Border>-->
 
             <!-- continue button -->
             <Button
