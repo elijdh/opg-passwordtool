@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
         d:DesignHeight="600" d:DesignWidth="920"
       Background="Transparent"
-      Title="OPGS's Adding Password Tool">
+      Title="Password Adding Tool">
 
 
     <Border Background="#F4F3F2" CornerRadius="30">
@@ -15,27 +15,27 @@
         <Grid>
 
             <Image Source=" https://www.opg.com/wp-content/uploads/2019/02/rsz_opg_condensed_logo_green_rbg.png"
-         Stretch="Uniform" Margin="193,45,617,486"/>
+               Stretch="Uniform" Margin="-65,500,700,40" Width="75"/>
 
 
             <TextBlock Name="TitleTextBox"
            VerticalAlignment="Top"
-           HorizontalAlignment="Left"
-           FontSize="35" Width="454"
-           Margin="308,67,0,0"
+           HorizontalAlignment="Center"
+           FontSize="35"
+           Margin="0,67,0,0"
            FontWeight="Bold" />
 
 
 
-            <TextBlock Name="PasswordPrompt" Margin="151,218,0,336"
+            <TextBlock Name="PasswordPrompt" Margin="0,218,0,336"
                 FontSize="20"
                 TextWrapping="Wrap"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Center"
                 TextAlignment="center" Width="650" 
                 />
 
 
-            <Border CornerRadius="15" Background="#E6E6E6" Height="50" Margin="203,324,203,226">
+            <Border CornerRadius="15" Background="#E6E6E6" Height="50" Margin="200,324,200,226">
                 <TextBox Name="passwordTextBox" 
                  Height="50" 
                  TextAlignment="Center"

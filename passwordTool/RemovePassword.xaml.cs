@@ -23,9 +23,7 @@ using DragEventArgs = System.Windows.DragEventArgs;
 
 namespace passwordTool
 {
-    /// <summary>
-    /// Interaction logic for RemovePassword.xaml
-    /// </summary>
+
     public partial class RemovePassword : Page
     {
         private string titlePart;
@@ -39,7 +37,7 @@ namespace passwordTool
 
             titlePart = title;
             descrip = textLine;
-            this.operation = operation;            
+            this.operation = operation;
 
             // for textboxes
             TitleTextBox.Text = $"'s {title} Tool";
@@ -49,29 +47,26 @@ namespace passwordTool
 
         void Button_Close(object sender, RoutedEventArgs e)
         {
-            var window= Window.GetWindow(this);
+            var window = Window.GetWindow(this);
             window?.Close();
         }
 
         private void Button_Minimize(object sender, RoutedEventArgs e)
         {
-            var window=Window.GetWindow(this);
+            var window = Window.GetWindow(this);
             window.WindowState = WindowState.Minimized;
         }
 
         private void Button_Click_Folder(object sender, RoutedEventArgs e)
         {
 
-            // creating new instance of folder browser dialog
-            var folderDialog = new System.Windows.Forms.FolderBrowserDialog();
-
-            // show dialigue + check if user clicked ok
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            using (var folderDialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-                // selected folder path
-                selectedPath = folderDialog.SelectedPath;
-                SelectedPathTextBox.Text = $"Selected: {selectedPath}";
-                
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    selectedPath = folderDialog.SelectedPath;
+                    SelectedPathTextBox.Text = $"Selected: {selectedPath}";
+                }
             }
         }
 
@@ -80,15 +75,17 @@ namespace passwordTool
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string[] files= (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length>0 && Directory.Exists(files[0]))
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length > 0 && Directory.Exists(files[0]))
                 {
                     e.Effects = DragDropEffects.Copy;
-                } else
-                {
-                    e.Effects= DragDropEffects.None;
                 }
-            } else { e.Effects= DragDropEffects.None; }
+                else
+                {
+                    e.Effects = DragDropEffects.None;
+                }
+            }
+            else { e.Effects = DragDropEffects.None; }
         }
 
         private void Button_Drop(object sender, DragEventArgs e)
@@ -96,12 +93,13 @@ namespace passwordTool
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                if (files.Length>0 && Directory.Exists(files[0]))
+                if (files.Length > 0 && Directory.Exists(files[0]))
                 {
                     ErrorMessageTextBlock.Text = "";
-                   selectedPath = files[0];
-                    SelectedPathTextBox.Text= $"Selected: {selectedPath}";
-                } else
+                    selectedPath = files[0];
+                    SelectedPathTextBox.Text = $"Selected: {selectedPath}";
+                }
+                else
                 {
                     ShowErrorMessage("please drop a folder, not a file");
                 }
@@ -115,15 +113,16 @@ namespace passwordTool
             {
                 NavigateToPages(FolderPathTextBox.Text);
             }
-            else if(!string.IsNullOrEmpty(selectedPath) && System.IO.Directory.Exists(selectedPath))
+            else if (!string.IsNullOrEmpty(selectedPath) && System.IO.Directory.Exists(selectedPath))
             {
                 NavigateToPages(selectedPath);
-            } else
+            }
+            else
             {
                 ShowErrorMessage("Please Enter a valid Directory path or select a folder");
             }
-            
-            
+
+
         }
 
         // to actuall go to the pages 
@@ -131,6 +130,13 @@ namespace passwordTool
         {
             var operations = new PerformingOperations(path, operation, titlePart);
             NavigationService.Navigate(operations);
+
+            // clear the backstack
+            while (NavigationService.CanGoBack)
+            {
+                NavigationService.RemoveBackEntry();
+            }
+
         }
 
         // text for error message
@@ -139,28 +145,13 @@ namespace passwordTool
             ErrorMessageTextBlock.Text = $"ERROR: {message}";
         }
 
-        //private void Button_Click_Folder(object sender, RoutedEventArgs e)
-        //{
-        //   using (var dialog=new CommonOpenFileDialoge())
-        //    {
-        //        dialog.isFolderPicker = true;
-        //        if (dialog.ShowDialog() == commonFileDialogResult.OK)
-        //        {
-        //            string selectedpath = dialog.Filename;
-        //            var newPage = new PerformingOperations(selectedpath, "R");
-        //            NavigationService.Navigate(newPage);
-        //        }
-
-        //    }
-        //}
-
         private void Button_Click_Back(object sender, RoutedEventArgs e)
         {
             var mainWindow = AppManager.CurrentMainWindow as MainWindow;
             mainWindow.Show();
             if (mainWindow != null)
             {
-                
+
                 mainWindow.ButtonPanel.Visibility = Visibility.Visible; // Ensure button panel is shown
             }
 
@@ -173,8 +164,8 @@ namespace passwordTool
         {
             if (FolderPathTextBox.Text == "Enter folder path")
             {
-                FolderPathTextBox.Text= string.Empty;
-                FolderPathTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89,89,89));
+                FolderPathTextBox.Text = string.Empty;
+                FolderPathTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
             }
         }
 

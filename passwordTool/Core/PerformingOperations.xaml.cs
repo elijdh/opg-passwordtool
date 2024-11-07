@@ -68,9 +68,9 @@ namespace passwordTool.Core
             if (NavigationService.CanGoBack)
             {
                 NavigationService.GoBack();
-            } 
+            }
 
-        } 
+        }
         public void Button_Close(object sender, RoutedEventArgs e)
         {
             var window = System.Windows.Window.GetWindow(this);
@@ -91,11 +91,33 @@ namespace passwordTool.Core
             ErrorMessageTextBlock.Text = $"ERROR: {message}";
         }
 
+        public void goMainPage()
+        {
+            // getting rid of backstack 
+            while (NavigationService.CanGoBack)
+            {
+                NavigationService.RemoveBackEntry();
+            }
+
+            // going to main page
+            var mainWindow = AppManager.CurrentMainWindow as MainWindow;
+            mainWindow.Show();
+            if (mainWindow != null)
+            {
+
+                mainWindow.ButtonPanel.Visibility = Visibility.Visible; // Ensure button panel is shown
+            }
+
+            // Hide the current page
+            this.Visibility = Visibility.Hidden;
+
+
+        }
 
         // when continue 
         private void Button_Run_code(object sender, RoutedEventArgs e)
         {
-            
+
             password = passwordTextBox.Text;
 
             if ((string.IsNullOrEmpty(password) && password.Trim().Length == 0) || (password == "Enter your password"))
@@ -161,10 +183,10 @@ namespace passwordTool.Core
             catch (System.Runtime.InteropServices.COMException)
             {
                 if (!Path.GetFileName(filePath).StartsWith("~$"))
-                { 
+                {
                     errorfiles.Add(filePath);
                 }
-               
+
             }
             finally
             {
@@ -179,7 +201,7 @@ namespace passwordTool.Core
                 {
                     //wordApp.Quit(); // Quit the Word application
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(wordApp);
-                    
+
                 }
             }
         }
@@ -187,7 +209,7 @@ namespace passwordTool.Core
         // openeing pdf documents
         static void OpenPdfDocument(string filepath, string password, string opcode)
         {
-           
+
 
         }
 
@@ -203,9 +225,10 @@ namespace passwordTool.Core
             List<string> errorFiles = new List<string>();
 
             //for opening files
-            if (opcode=="O")
+            if (opcode == "O")
             {
-                foreach (string filepath in Directory.GetFiles(folderpath,"*.docx")) {
+                foreach (string filepath in Directory.GetFiles(folderpath, "*.docx"))
+                {
                     OpenWordDocument(filepath, password, opcode, errorFiles);
                 }
 
@@ -214,23 +237,17 @@ namespace passwordTool.Core
                 {
                     ErrorPage(errorFiles, opcode);
                 }
-               
-                SimpleErrorPage(folderpath, "Message", "All of the files have been opened.");
-                MainWindow mainWindow = new MainWindow
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                AppManager.CurrentMainWindow=mainWindow;
-                mainWindow.Show();
-                Button_Close(this, null); // Ensure this closes the current window properly.
 
+                SimpleErrorPage(folderpath, "Message", "All of the files have been opened.");
+                goMainPage();
             }
 
             //to add password to files
-            else if(opcode=="A")
+            else if (opcode == "A")
             {
                 // iterates through all .docx files
-                foreach(string filepath in Directory.GetFiles(folderpath,"*.docx")) {
+                foreach (string filepath in Directory.GetFiles(folderpath, "*.docx"))
+                {
                     //loads files, tries encrypting
                     try
                     {
@@ -239,14 +256,15 @@ namespace passwordTool.Core
                         doc.Encrypt(password);
                         doc.SaveToFile(filepath, Spire.Doc.FileFormat.Docx);
                     }
-                    catch (Exception) {
+                    catch (Exception)
+                    {
 
                         if (!Path.GetFileName(filepath).StartsWith("~$"))
                         {
                             errorFiles.Add(filepath);
                         }
 
-                                               
+
                     }
                 }
 
@@ -262,14 +280,16 @@ namespace passwordTool.Core
                             pdf.SaveToFile(filepath, Spire.Pdf.FileFormat.PDF);
                         }
 
-                    } catch (Exception) {
+                    }
+                    catch (Exception)
+                    {
 
                         if (!Path.GetFileName(filepath).StartsWith("~$"))
                         {
                             errorFiles.Add(filepath);
                             //SimpleErrorPage(filepath, opcode, "The file may already be encrypted, please check or try again");
                         }
-                        
+
                     }
                 }
 
@@ -277,17 +297,11 @@ namespace passwordTool.Core
                 if (errorFiles.Count > 0)
                 {
                     SimpleErrorPage("", opcode, $"The following file(s) may already be encrypted, please check or try again\n\n{string.Join(Environment.NewLine, errorFiles)}");
-                    
+
                 }
 
                 SimpleErrorPage(folderpath, "Message", "Password has been added to the files.");
-                MainWindow mainWindow = new MainWindow
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                AppManager.CurrentMainWindow = mainWindow;
-                mainWindow.Show();
-                Button_Close(this, null);
+                goMainPage();
 
 
             }
@@ -295,7 +309,7 @@ namespace passwordTool.Core
             else if (opcode == "R")
             {
                 // iterates through docx files in directory
-                foreach(string filepath in Directory.GetFiles(folderpath, "*.docx"))
+                foreach (string filepath in Directory.GetFiles(folderpath, "*.docx"))
                 {
                     try
                     {
@@ -312,7 +326,7 @@ namespace passwordTool.Core
                         }
                         //ErrorPage(filepath, opcode);
 
-                        
+
                     }
                 }
 
@@ -340,28 +354,16 @@ namespace passwordTool.Core
                 // to deal with error files
                 if (errorFiles.Count > 0)
                 {
-                    
+
                     ErrorPage(errorFiles, opcode);
                 }
                 SimpleErrorPage(folderpath, "Message", "Password has been removed from all of the files.");
-                MainWindow mainWindow = new MainWindow
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                AppManager.CurrentMainWindow = mainWindow;
-                mainWindow.Show();
-                Button_Close(this, null);
+                goMainPage();
             }
             else
             {
                 SimpleErrorPage("", opcode, "An Unexpected error occured. Try Again.");
-                MainWindow mainWindow = new MainWindow
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                AppManager.CurrentMainWindow = mainWindow;
-                mainWindow.Show();
-                Button_Close(this, null); // Ensure this closes the current window properly.
+                goMainPage();
             }
         }
     }

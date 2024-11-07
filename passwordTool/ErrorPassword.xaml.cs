@@ -242,7 +242,7 @@ namespace passwordTool
 
                 }
 
-                // for remocing passwords
+                // for removing passwords
                 if (opcode=="R")
                 {
 

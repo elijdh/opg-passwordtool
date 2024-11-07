@@ -22,12 +22,16 @@ namespace passwordTool
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private weakEventHandler<MainWindow> _weakHandler;
         public MainWindow()
         {
 
             InitializeComponent();
             AppManager.CurrentMainWindow = this;
             ButtonPanel.Visibility = Visibility.Visible;
+
+
         }
 
         // to move window around
@@ -39,52 +43,35 @@ namespace passwordTool
             }
         }
 
+        private void NavigateToPage(string descrip, string msg, string opcode)
+        {
+            var page = new RemovePassword(descrip, msg, opcode);
+            ButtonPanel.Visibility = Visibility.Hidden;
+            _Buttons.Navigate(page);
+
+
+        }
+
         private void Button_Click_remove(object sender, RoutedEventArgs e)
         {
 
-            var page = new RemovePassword("Removing Password", "This tool will Remove the same password from all files in a given directory", "R");
-            ButtonPanel.Visibility = Visibility.Hidden;
-            _Buttons.Navigate(page);
+            NavigateToPage("Removing Password", "This tool will Remove the same password from all files in a given directory", "R");
         }
 
         private void Button_Click_add(object sender, RoutedEventArgs e)
         {
 
-            var page = new RemovePassword("Adding Password", "This tool will add the same password to all files in a given directory", "A");
-            ButtonPanel.Visibility = Visibility.Hidden;
-            _Buttons.Navigate(page);
+            NavigateToPage("Adding Password", "This tool will add the same password to all files in a given directory", "A");
+
         }
 
         private void Button_Click_open(object sender, RoutedEventArgs e)
         {
 
-            var page = new RemovePassword("Opening Documents", "This tool will open all of the files in a given directory protected with the same password", "O");
-            ButtonPanel.Visibility = Visibility.Hidden;
-            _Buttons.Navigate(page);
+            NavigateToPage("Opening Documents", "This tool will open all of the files in a given directory protected with the same password", "O");
         }
 
-
-        // _------------------------------using diff pages ------------------------------------
-        //private void Button_Click_remove(object sender, RoutedEventArgs e)
-        //{
-        //    ButtonPanel.Visibility = Visibility.Collapsed; // gets rid of buttons when navigating to new page
-        //    _Buttons.Navigate(new Uri("RemovePassword.xaml", UriKind.Relative)); // actually navigates to new page
-        //}
-
-        //private void Button_Click_add(object sender, RoutedEventArgs e)
-        //{
-        //    ButtonPanel.Visibility = Visibility.Collapsed;
-        //    _Buttons.Navigate(new Uri("AddPassword.xaml", UriKind.Relative));
-        //}
-
-        //private void Button_Click_open(object sender, RoutedEventArgs e)
-        //{
-        //    ButtonPanel.Visibility = Visibility.Collapsed;
-        //    _Buttons.Navigate(new Uri("OpenDocs.xaml", UriKind.Relative));
-        //}
-
-
-        void Button_Close (object sender, RoutedEventArgs e)
+        void Button_Close(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

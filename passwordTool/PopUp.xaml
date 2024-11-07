@@ -119,7 +119,7 @@
 
             <!-- prompt for password-->
             <TextBlock 
-                Text="Do Would you like to skip these file(s) or enter a different password for them?"
+                Text="Would you like to skip the file(s) or enter a different password for them?"
                 Margin="0,130,0,51"
                 FontSize="10"
                 TextWrapping="Wrap"
@@ -204,7 +204,7 @@
                     </Border>-->
                     
                     <Button
-                        Content="Skip these file(s)"
+                        Content="Skip the file(s)"
                         Style="{StaticResource otherButton}" 
                         FontSize="11"
                         Click="Button_Close"
