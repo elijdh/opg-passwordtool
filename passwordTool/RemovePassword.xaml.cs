@@ -33,7 +33,7 @@ namespace passwordTool
             this.operation = operation;
 
             // for textboxes
-            TitleTextBox.Text = $"'s {title} Tool";
+            TitleTextBox.Text = $"{title} Tool";
             DescriptTextBox.Text = descrip;
 
         }

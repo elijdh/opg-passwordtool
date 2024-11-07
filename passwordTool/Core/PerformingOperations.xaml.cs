@@ -28,7 +28,7 @@ namespace passwordTool.Core
 
             //setting tectblock display for folderpath and operation code
             SelectedPathTextBox.Text = $"Selected Folder: {folderpath}";
-            TitleTextBox.Text = $"'s {TitlePart} Tool";
+            TitleTextBox.Text = $"{TitlePart} Tool";
 
             // for prompt on first page
             if (operation == "R") { PasswordPrompt.Text = "Please Enter the password you would like to remove from the files below:"; }
