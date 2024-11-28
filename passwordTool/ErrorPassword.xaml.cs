@@ -8,6 +8,7 @@ using Spire.Pdf;
 using Word = Microsoft.Office.Interop.Word;
 using Window = System.Windows.Window;
 using Path = System.IO.Path;
+using System.Windows.Media.Imaging;
 
 namespace passwordTool
 {
@@ -34,7 +35,36 @@ namespace passwordTool
 
 
         }
+        private bool isPasswordVisible = false;
+        private void TogglePasswordVisibility(object sender, RoutedEventArgs e)
+        {
+            isPasswordVisible = !isPasswordVisible;
 
+            if (isPasswordVisible)
+            {
+                // Show the TextBox and hide the PasswordBox
+                passwordTextBox.Visibility = Visibility.Visible;
+                passwordBox.Visibility = Visibility.Collapsed;
+
+                // Update the icon to indicate the password is visible
+                toggleImage.Source = new BitmapImage(new Uri("../assets/passwordVisibility1.png", UriKind.Relative));
+
+                // Set the TextBox text to match the PasswordBox password
+                passwordTextBox.Text = passwordBox.Password;
+            }
+            else
+            {
+                // Show the PasswordBox and hide the TextBox
+                passwordTextBox.Visibility = Visibility.Collapsed;
+                passwordBox.Visibility = Visibility.Visible;
+
+                // Update the icon to indicate the password is hidden
+                toggleImage.Source = new BitmapImage(new Uri("../assets/passwordVisibility.png", UriKind.Relative));
+
+                // Sync the PasswordBox with the TextBox's text
+                passwordBox.Password = passwordTextBox.Text;
+            }
+        }
 
         // to be able to go back to popup.xaml page
         private void Button_Click_Back(object sender, RoutedEventArgs e)
@@ -52,24 +82,22 @@ namespace passwordTool
             this.Visibility = Visibility.Hidden;
 
         }
-
-        // for text in password textbox
-        private void PasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (passwordTextBox.Text == "New Password")
-            {
-                passwordTextBox.Text = string.Empty;
-                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
-            }
+            // Hide placeholder when the PasswordBox is focused
+            placeholderText.Visibility = Visibility.Collapsed;
         }
 
-        private void PasswordTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(passwordTextBox.Text))
-            {
-                passwordTextBox.Text = "New Password";
-                passwordTextBox.Foreground = new SolidColorBrush(Color.FromRgb(89, 89, 89));
-            }
+            // Show placeholder if the PasswordBox is empty and loses focus
+            placeholderText.Visibility = string.IsNullOrEmpty(passwordBox.Password) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            // Update placeholder visibility based on content
+            placeholderText.Visibility = string.IsNullOrEmpty(passwordBox.Password) ? Visibility.Visible : Visibility.Collapsed;
         }
 
 
@@ -266,10 +294,20 @@ namespace passwordTool
                             }
                             catch (Exception)
                             {
-                                //ErrorPage(filepath, opcode);
-                                if (!Path.GetFileName(file).StartsWith("~$"))
+                                try
                                 {
-                                    errorfiles.Add(file);
+                                    PdfDocument pdf = new PdfDocument();
+                                    pdf.LoadFromFile(file, newpassword);
+                                    pdf.Security.Encrypt(string.Empty, string.Empty, Spire.Pdf.Security.PdfPermissionsFlags.Default, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit, newpassword);
+                                    pdf.SaveToFile(file, Spire.Pdf.FileFormat.PDF);
+                                }
+                                catch
+                                {
+                                    //ErrorPage(filepath, opcode);
+                                    if (!Path.GetFileName(file).StartsWith("~$"))
+                                    {
+                                        errorfiles.Add(file);
+                                    }
                                 }
                             }
                         }

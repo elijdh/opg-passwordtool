@@ -367,10 +367,20 @@ namespace passwordTool.Core
                     }
                     catch (Exception)
                     {
-                        //ErrorPage(filepath, opcode);
-                        if (!Path.GetFileName(filepath).StartsWith("~$"))
+                        try
                         {
-                            errorFiles.Add(filepath);
+                            PdfDocument pdf = new PdfDocument();
+                            pdf.LoadFromFile(filepath, password);
+                            pdf.Security.Encrypt(string.Empty, string.Empty, Spire.Pdf.Security.PdfPermissionsFlags.Default, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit, password);
+                            pdf.SaveToFile(filepath, Spire.Pdf.FileFormat.PDF);
+                        }
+                        catch
+                        {
+                            //ErrorPage(filepath, opcode);
+                            if (!Path.GetFileName(filepath).StartsWith("~$"))
+                            {
+                                errorFiles.Add(filepath);
+                            }
                         }
                     }
                 }
